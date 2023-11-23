@@ -77,6 +77,7 @@ void http_post_json_example(char *post_data)
     esp_http_client_cleanup(client);
 }
 
+
 void app_main(void)
 {
 
