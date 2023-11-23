@@ -1,1 +1,0 @@
-/home/krypto/esp/esp-idf/components/mbedtls/mbedtls/library/error.c
