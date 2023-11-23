@@ -1,3 +1,46 @@
+//phan giup autoreload page
+document.addEventListener('DOMContentLoaded', function () {
+  var reloadCheck = document.getElementById('reloadCheck');
+
+  function reloadPage() {
+    location.href = location.href.split("?")[0] + "?t=" + new Date().getTime();
+  }
+
+  function stopAutoReload() {
+    clearInterval(reloadInterval);
+  }
+
+  function startAutoReload() {
+    reloadInterval = setInterval(function () {
+      reloadPage();
+    }, 9000);
+  }
+  // Load state from localStorage
+  var isAutoReloadEnabled = localStorage.getItem('isAutoReloadEnabled') === 'true';
+
+  // Set initial state of the toggle switch
+  reloadCheck.checked = isAutoReloadEnabled;
+
+  // Add an event listener to the toggle switch
+  reloadCheck.addEventListener('change', function () {
+    if (reloadCheck.checked) {
+      startAutoReload();
+    } else {
+      stopAutoReload();
+    }
+    // Save state to localStorage
+    localStorage.setItem('isAutoReloadEnabled', reloadCheck.checked);
+  });
+
+  // Start auto-reload if it was enabled
+  if (isAutoReloadEnabled) {
+    startAutoReload();
+  }
+});
+
+//-------------
+
+
 
 function closeAlert(button) {
   // Tìm ra phần tử cha của nút đóng (button)
@@ -8,13 +51,13 @@ function closeAlert(button) {
     alertDiv.style.display = 'none';
   }
 }
+
 function toggleChange(log) {
   // Lấy tham chiếu đến phần tử checkbox và phần tử hiển thị trạng thái
-  var toggleSwitch = document.getElementById("toggleSwitch");
-  var statusElement = document.getElementById("status");
+  var devideSw = document.getElementById("devideSw");
   // Thêm sự kiện thay đổi
-  toggleSwitch.addEventListener("change", function () {
-    if (toggleSwitch.checked) {
+  devideSw.addEventListener("change", function () {
+    if (devideSw.checked) {
       statusChange(1);
     } else {
       statusChange(0);

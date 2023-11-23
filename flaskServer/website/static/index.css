@@ -1,4 +1,17 @@
 /* Thiết lập kiểu dáng cho nút gạt */
+div.top {
+    margin-top: 1%;
+}
+
+h2.yellow {
+    color: #5e4a06;
+}
+
+span.top {
+    position: relative;
+    top: 5px;
+}
+
 .toggle {
     position: relative;
     display: inline-block;
@@ -40,8 +53,16 @@ input:checked+.slider {
     background-color: #065e32;
 }
 
-input:focus+.slider {
-    box-shadow: 0 0 1px #065e32;
+input.color-red:checked+.slider {
+    background-color: #5e1306
+}
+
+input.color-blue:checked+.slider {
+    background-color: #062f5e;
+}
+
+input.color-yellow:checked+.slider {
+    background-color: #5e4a06;
 }
 
 input:checked+.slider:before {
@@ -50,7 +71,58 @@ input:checked+.slider:before {
     transform: translateX(26px);
 }
 
+
 #status {
     margin-top: 10px;
     font-weight: bold;
+    font-size: 23px;
+}
+
+.scrollable-box {
+    width: 100%;
+    /* Thêm max-width để hạn chế chiều rộng tối đa của box */
+    height: 600px;
+    border: 1px solid #ccc;
+    overflow: auto;
+    padding: 10px;
+}
+
+/* Thêm một số style để làm đẹp */
+.box-content {
+    background-color: #f0f0f0;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+/* Form add data and device toggle */
+.flex-container {
+    align-items: center;
+    display: flex;
+}
+
+.flex-item {
+    flex: 1;
+    margin-right: 10px;
+    /* Khoảng cách giữa các div */
+    box-sizing: border-box;
+    /* Đảm bảo padding và border không làm tăng kích thước của div */
+}
+
+/* Để loại bỏ margin-right của phần tử cuối cùng */
+.flex-item:last-child {
+    margin-right: 0;
+}
+
+/* Form add data test */
+.form-container {
+    width: 50vh;
+    /* 50% chiều cao của viewpoort */
+    align-items: center;
+    /* Canh giữa theo chiều dọc */
+    justify-content: center;
+    /* Canh giữa theo chiều ngang */
+}
+
+.form-group {
+    margin-bottom: 15px;
 }

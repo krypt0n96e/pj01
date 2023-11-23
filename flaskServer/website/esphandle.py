@@ -9,19 +9,19 @@ esphandle = Blueprint('esphandle', __name__)
 def esp_handle():
     if request.method == 'POST':
         try:
-            post_data = json.loads(request.data)
-            data=post_data['data']
-            print("Received data:", data)
-            data = data1(data=data)
-            db.session.add(data)
-            db.session.commit()
-            
+            # post_data = request.data.decode('utf-8')
             # post_data = json.loads(request.data)
-            # print("Received post_data:", post_data)
-            # # Convert the dictionary to a JSON string before storing in the database
-            # data = data1(data=json.dumps(post_data))
+            # data=post_data['data']
+            # print("Received data:", data)
+            # data = data1(data=data)
             # db.session.add(data)
             # db.session.commit()
+            post_data = json.loads(request.data)
+            print("Received post_data:", post_data)
+            # Convert the dictionary to a JSON string before storing in the database
+            data = data1(data=json.dumps(post_data))
+            db.session.add(data)
+            db.session.commit()
 
             return "ok"
         except Exception as e:

@@ -1,68 +1,90 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
 %}
-<!--script>
-  function reloadPage() {
-    setTimeout(function () {
-      // Append a timestamp as a query parameter to the URL to break the cache
-      location.href =
-        location.href.split("?")[0] + "?t=" + new Date().getTime();
-    }, 5000);
-  }
-  reloadPage();
-</script-->
-<h1 align="center">Data</h1>
-<table class="table table-bordered">
-  <thead>
-    <tr>
-      <th scope="col">ID</th>
-      <th scope="col">Data</th>
-      <th scope="col">Date</th>
-      <th scope="col">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for single_data in datas %}
-    <tr>
-      <td>{{ single_data.id }}</td>
-      <td>{{ single_data.data }}</td>
-      <td>{{ single_data.date }}</td>
-      <td>
-        <button
-          type="button"
-          class="btn btn-danger"
-          onClick="deleteData({{single_data.id}})"
-        >
-          Delete
-        </button>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
 
-<form method="POST">
-  <div class="form-group">
-    <label for="data">Add data:</label>
-    <textarea name="data" id="data" class="form-control"></textarea>
+<div align="center" class="top">
+  <h2 class="yellow">
+    Auto refresh:
+    <span class="top">
+      <label class="toggle">
+        <input type="checkbox" id="reloadCheck" class="color-yellow" />
+        <span class="slider"></span>
+      </label>
+    </span>
+  </h2>
+</div>
+
+<div align="center" class="flex-container">
+  <div class="flex-item">
+    <div align="center">
+      <h2>Cong tac on/off</h2>
+      {%if(log.logs)%}
+      <label class="toggle">
+        <input type="checkbox" id="devideSw" checked />
+        <span
+          class="slider"
+          class="slider-green"
+          onClick="toggleChange({{log.logs}})"
+        ></span>
+      </label>
+      <div id="status">Status: ON</div>
+      {%else%}
+      <label class="toggle">
+        <input type="checkbox" id="devideSw" />
+        <span class="slider" onClick="toggleChange({{log.logs}})"></span>
+      </label>
+      <div id="status">Status: OFF</div>
+      {%endif%}
+    </div>
   </div>
-  <button type="submit" class="btn btn-primary">Add data</button>
-</form>
 
-<div align="center">
-  <h1>Cong tac on/off</h1>
-  {%if(log.logs)%}
-  <label class="toggle">
-    <input type="checkbox" id="toggleSwitch" checked />
-    <span class="slider" onClick="toggleChange({{log.logs}})"></span>
-  </label>
-  <div id="status">Status: ON</div>
-  {%else%}
-  <label class="toggle">
-    <input type="checkbox" id="toggleSwitch" />
-    <span class="slider" onClick="toggleChange({{log.logs}})"></span>
-  </label>
-  <div id="status">Status: OFF</div>
-  {%endif%}
+  <div class="flex-item">
+    <div class="form-container">
+      <form method="POST">
+        <div class="form-group">
+          <label for="data">Add data:</label>
+          <textarea name="data" id="data" class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Add data</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<h1 align="center">Data</h1>
+<div class="scrollable-box">
+  <!-- Nội dung trong box -->
+  <div class="box-content">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Data</th>
+          <th scope="col">Date</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for single_data in datas|reverse %}
+        <tr>
+          <td>{{ single_data.id }}</td>
+          <td>{{ single_data.data }}</td>
+          <td>{{ single_data.date }}</td>
+          <td>
+            <button
+              type="button"
+              class="btn btn-danger"
+              onClick="deleteData({{single_data.id}})"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Khi nội dung vượt quá kích thước box, thanh cuộn sẽ xuất hiện -->
 </div>
 
 {% endblock %}
