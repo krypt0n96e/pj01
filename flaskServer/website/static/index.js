@@ -65,6 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             y: {
               min: 0,
+              max: 5000,
             }
           }
         }
@@ -87,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         // Only display the top 100 entries
-        var topEntries = dataList.slice(0, 100);
+        var topEntries = dataList.slice(0, 50);
 
         updateTable(topEntries);
         // Assuming dataList is your array of data objects
