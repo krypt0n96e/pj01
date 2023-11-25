@@ -48,7 +48,6 @@ void http_post_json_example(char *post_data)
 {
     esp_http_client_handle_t client = esp_http_client_init(&(esp_http_client_config_t){
         .url = "http://192.168.1.18:8888/esp",
-        .host = "192.168.1.14",
         .event_handler = _http_event_handler,
         .method = HTTP_METHOD_POST,
     });
@@ -87,15 +86,15 @@ void app_main(void)
     ESP_ERROR_CHECK(example_connect());
 
     // JSON data to be sent in the POST request
-    char *post_data = (char *)malloc(strlen("{\"data\":\"") + 1);
-    char *s = (char *)malloc(30);
+    char *post_data = (char *)malloc(strlen("{\"device_id\":\"1\",\"data\":\"") + 1);
+    char *s = (char *)malloc(100);
 
     // Run the HTTP POST JSON example
     while (1)
     {
         printf("thoi diem bat dau gui: %lld\n", time(NULL));
-        strcpy(post_data, "{\"data\":\"");
-        snprintf(s, 30, "%d%d+time:%lld\"}", rand() % 90000 + 10000, rand() % 90000 + 10000, time(NULL));
+        strcpy(post_data, "{\"device_id\":\"1\",\"data\":\"");
+        snprintf(s, 100, "%d+time:%lld\"}", rand() % 90000 + 10000, time(NULL));
         printf("%s\n", s);
         strcat(post_data, s);
         printf("%s\n", post_data);
