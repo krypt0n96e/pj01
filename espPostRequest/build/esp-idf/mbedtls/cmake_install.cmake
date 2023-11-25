@@ -39,6 +39,6 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/krypto/Documents/git/pj01/espPostRequest/build/esp-idf/mbedtls/mbedtls/cmake_install.cmake")
+  include("/home/krypto/Documents/esp/2/espPostRequest/build/esp-idf/mbedtls/mbedtls/cmake_install.cmake")
 endif()
 

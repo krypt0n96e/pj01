@@ -6,7 +6,7 @@
 # It is included in the main 'build.ninja'.
 
 # =============================================================================
-# Project: project-name2
+# Project: https_request
 # Configurations: 
 # =============================================================================
 # =============================================================================
@@ -14,7 +14,7 @@
 #############################################
 # Rule for compiling C files.
 
-rule C_COMPILER__project-name2.2eelf_
+rule C_COMPILER__https_request.2eelf_
   depfile = $DEP_FILE
   deps = gcc
   command = /home/krypto/.espressif/tools/xtensa-esp32-elf/esp-12.2.0_20230208/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -24,7 +24,7 @@ rule C_COMPILER__project-name2.2eelf_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__project-name2.2eelf_
+rule CXX_EXECUTABLE_LINKER__https_request.2eelf_
   command = $PRE_LINK && /home/krypto/.espressif/tools/xtensa-esp32-elf/esp-12.2.0_20230208/xtensa-esp32-elf/bin/xtensa-esp32-elf-g++ $FLAGS $LINK_FLAGS $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1366,7 +1366,7 @@ rule C_STATIC_LIBRARY_LINKER____idf_protocol_examples_common_
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = /usr/bin/cmake --regenerate-during-build -S/home/krypto/Documents/git/pj01/espPostRequest -B/home/krypto/Documents/git/pj01/espPostRequest/build
+  command = /usr/bin/cmake --regenerate-during-build -S/home/krypto/Documents/esp/2/espPostRequest -B/home/krypto/Documents/esp/2/espPostRequest/build
   description = Re-running CMake...
   generator = 1
 

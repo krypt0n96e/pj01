@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2022-2023 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2022 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Unlicense OR CC0-1.0
 import http.server
 import logging
@@ -56,9 +56,11 @@ def start_https_server(server_file: str, key_file: str, server_ip: str, server_p
 
 
 @pytest.mark.esp32
+@pytest.mark.esp32c3
+@pytest.mark.esp32s2
+@pytest.mark.esp32s3
 @pytest.mark.ethernet
 @pytest.mark.parametrize('config', ['cli_ses_tkt',], indirect=True)
-@pytest.mark.parametrize('erase_nvs', ['y'], indirect=True)
 def test_examples_protocol_https_request_cli_session_tickets(dut: Dut) -> None:
     logging.info("Testing for \"esp_tls client session tickets\"")
 
@@ -116,9 +118,11 @@ def test_examples_protocol_https_request_cli_session_tickets(dut: Dut) -> None:
 
 
 @pytest.mark.esp32
+@pytest.mark.esp32c3
+@pytest.mark.esp32s2
+@pytest.mark.esp32s3
 @pytest.mark.ethernet
 @pytest.mark.parametrize('config', ['ssldyn',], indirect=True)
-@pytest.mark.parametrize('erase_nvs', ['y'], indirect=True)
 def test_examples_protocol_https_request_dynamic_buffers(dut: Dut) -> None:
     # Check for connection using crt bundle with mbedtls dynamic resource enabled
     # check and log bin size
@@ -147,9 +151,8 @@ def test_examples_protocol_https_request_dynamic_buffers(dut: Dut) -> None:
     logging.info("Passed the test for \"https_request using crt bundle\" when mbedtls dynamic resource was enabled")
 
 
-@pytest.mark.esp32
+@pytest.mark.supported_targets
 @pytest.mark.ethernet
-@pytest.mark.parametrize('erase_nvs', ['y'], indirect=True)
 def test_examples_protocol_https_request(dut: Dut) -> None:
 
     """
