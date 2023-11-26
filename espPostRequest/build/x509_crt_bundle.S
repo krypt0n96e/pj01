@@ -1,4 +1,4 @@
-/* * Data converted from /home/krypto/Documents/esp/2/espPostRequest/build/esp-idf/mbedtls/x509_crt_bundle
+/* * Data converted from /home/krypto/Documents/git/pj01/espPostRequest/build/esp-idf/mbedtls/x509_crt_bundle
  */
 .data
 .section .rodata.embedded

@@ -1,4 +1,4 @@
-# Install script for directory: /home/krypto/Documents/esp/2/espPostRequest/main
+# Install script for directory: /home/krypto/Documents/git/pj01/espPostRequest/main
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

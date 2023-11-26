@@ -1,4 +1,4 @@
-/* * Data converted from /home/krypto/Documents/esp/2/espPostRequest/main/local_server_cert.pem
+/* * Data converted from /home/krypto/Documents/git/pj01/espPostRequest/main/local_server_cert.pem
  * (null byte appended)
  */
 .data
