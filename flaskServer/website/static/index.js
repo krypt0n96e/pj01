@@ -1,17 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
 
   // Function to update the table with new data
-  function updateTable(dataList) {
+  function updateTable(topEntries) {
     var tableBody = $('#data-table tbody');
+
     tableBody.empty(); // Clear existing content
-
-    // Sort dataList based on the date in descending order
-    dataList.sort(function (a, b) {
-      return b.id - a.id;
-    });
-
-    // Only display the top 100 entries
-    var topEntries = dataList.slice(0, 100);
 
     topEntries.forEach(function (entry) {
       var row = '<tr>' +
@@ -30,48 +23,45 @@ document.addEventListener("DOMContentLoaded", function () {
   // Func making chart
   // Declare a global variable to store the chart instance
   // Declare a global variable to store the chart instance
-var myChart;
+  var myChart;
 
-// Function to draw the line chart
-function drawLineChart(labels, data) {
-  var ctx = document.getElementById('myChart').getContext('2d');
+  // Function to draw the line chart
+  function drawLineChart(labels, data) {
+    var ctx = document.getElementById('myChart').getContext('2d');
 
-  // Check if the chart instance exists
-  if (myChart) {
-    // If it does, update the chart data and labels
-    myChart.data.labels = labels;
-    myChart.data.datasets[0].data = data;
-    myChart.update(); // Update the chart
-  } else {
-    // If the chart instance doesn't exist, create a new chart
-    console.log('Labels:', labels);
-    console.log('Data:', data);
+    // Check if the chart instance exists
+    if (myChart) {
+      // If it does, update the chart data and labels
+      myChart.data.labels = labels;
+      myChart.data.datasets[0].data = data;
+      myChart.update(); // Update the chart
+    } else {
+      // If the chart instance doesn't exist, create a new chart
+      console.log('Labels:', labels);
+      console.log('Data:', data);
 
-    myChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Data Trends',
-          data: data,
-          borderColor: 'rgba(75, 192, 192, 1)',
-          borderWidth: 1,
-          fill: true,
-          pointRadius: 3,
-          pointBackgroundColor: 'rgba(75, 192, 192, 1)',
-        }]
-      },
+      myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Data Trends',
+            data: data,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+            fill: true,
+            pointRadius: 3,
+            pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+          }]
+        },
         options: {
           scales: {
             x: {
-              type: 'time',
-              time: {
-                unit: 'millisecond', // Set the unit to 'millisecond'
-                tooltipFormat: 'SSS [ms]', // Format for milliseconds
-              },
+              // type: 'linear',
             },
             y: {
               min: 0,
+              max: 5000,
             }
           }
         }
@@ -86,12 +76,38 @@ function drawLineChart(labels, data) {
     $.ajax({
       url: '/esp',
       method: 'GET',
-      success: function (dataList) {
-        updateTable(dataList);
-        // Assuming dataList is your array of data objects
-        var latestData = dataList.slice(0, 30); // Take only the latest 100 entries
-        var labels = dataList.map(entry => new Date(entry.date));
-        var values = dataList.map(entry => Number(entry.data));
+      success: function (rawData) {
+
+
+
+        // Sort rawData based on the date in descending order
+        rawData.sort(function (a, b) {
+          return b.id - a.id;
+        });
+
+        // Only display the top 100 entries
+        var topTable = rawData.slice(0, 50);
+        var topChart = rawData.slice(0, 10);
+
+        // Parse and process the data
+        const parsedData = topChart.map(entry => {
+          const items = entry.data.split('#').filter(Boolean);
+          const data = items.map(item => {
+            const [time, value] = item.split('--');
+            return { time, value: parseInt(value) }; // Convert value to integer
+          });
+          return data;
+        });
+
+        // Flatten the array of arrays
+        const flatData = parsedData.reduce((acc, val) => acc.concat(val), []);
+        // Sort the flattened data based on time from smallest to largest
+        flatData.sort((a, b) => a.time - b.time);
+
+        updateTable(topTable);
+        // Assuming rawData is your array of data objects
+        var labels = flatData.map(entry => entry.time);
+        var values = flatData.map(entry => entry.value);
 
         // Draw the line chart
         drawLineChart(labels, values);
