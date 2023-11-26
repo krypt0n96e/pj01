@@ -2,5 +2,11 @@
     "idf.adapterTargetName": "esp32",
     "idf.portWin": "COM5",
     "idf.flashType": "UART",
-    "idf.port": "/dev/ttyUSB0"
+    "idf.port": "/dev/ttyUSB0",
+    "files.associations": {
+        "esp_adc_cal.h": "c",
+        "adc_cali.h": "c",
+        "adc_oneshot.h": "c",
+        "adc_cali_scheme.h": "c"
+    }
 }

@@ -21,6 +21,7 @@ if("${CONFIG}" STREQUAL "" OR "${CONFIG}" STREQUAL "")
   "local_server_cert.pem.S"
   "project_elf_src_esp32.c"
   "server_root_cert.pem.S"
+  "storage.bin"
   "x509_crt_bundle.S"
   )
 endif()
