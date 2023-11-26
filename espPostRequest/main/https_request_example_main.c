@@ -19,6 +19,7 @@
 #include "esp_log.h"
 
 #include "esp_task_wdt.h"
+#include "esp_timer.h"
 
 #define SPIFFS_TAG "spiffs"
 #define BUFFER_SIZE 512
@@ -144,10 +145,12 @@ void app_main(void)
         {
             fprintf(file, "{\"device_id\":\"1\",\"data\":\"");
         }
-        fprintf(file, "#%lld--%d", time(0), adc1_get_raw(ADC1_CHANNEL_0));
-        ESP_LOGI(TAG, "Writing #%lld--%d", time(0), adc1_get_raw(ADC1_CHANNEL_0));
+        long long int time=esp_timer_get_time() / 1000;
+        int value=adc1_get_raw(ADC1_CHANNEL_0);
+        fprintf(file, "#%lld--%d", time,value);
+        ESP_LOGI(TAG, "Writing #%lld--%d", time,value);
         count++;
-        if (count == 10)
+        if (count == 20)
         {
             fprintf(file, "\"}\n");
             lines++;
@@ -160,7 +163,7 @@ void app_main(void)
             http_post_json_example();
             deleteLine(1, &lines);
         }
-        vTaskDelay(pdMS_TO_TICKS(1000)); // Nghỉ một giây
+        vTaskDelay(pdMS_TO_TICKS(200)); // Nghỉ một giây
     }
     esp_vfs_spiffs_unregister(NULL);
 }

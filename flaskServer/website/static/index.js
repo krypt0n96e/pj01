@@ -7,9 +7,12 @@ document.addEventListener("DOMContentLoaded", function () {
     tableBody.empty(); // Clear existing content
 
     topEntries.forEach(function (entry) {
+      // Add a class to the second column for styling
+      var rowData = '<td class="multiline">' + entry.data + '</td>';
+
       var row = '<tr>' +
         '<td>' + entry.id + '</td>' +
-        '<td>' + entry.data + '</td>' +
+        rowData +
         '<td>' + entry.date + '</td>' +
         '<td>' + entry.device_id + '</td>' +
         '<td><button onclick="deleteData(' + entry.id + ')" class="btn btn-danger">Delete</button></td>' +
