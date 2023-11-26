@@ -127,7 +127,7 @@ input:checked + .slider:before {
 }
 
 .multiline {
-  max-width: 800px;
+  max-width: 900px;
   white-space: pre-wrap; /* Cho phép xuống dòng */
   word-wrap: break-word; /* Phá vỡ từ khi cần thiết để tránh tràn */
   overflow: visible; /* Hiển thị nội dung tràn ra ngoài */
