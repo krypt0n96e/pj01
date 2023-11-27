@@ -1,0 +1,241 @@
+192.168.1.23 - - [27/Nov/2023 18:18:20] "POST /esp HTTP/1.1" 200 -
+127.0.0.1 - - [27/Nov/2023 18:18:20] "GET /esp HTTP/1.1" 200 -
+127.0.0.1 - - [27/Nov/2023 18:18:20] "GET /esp HTTP/1.1" 200 -
+127.0.0.1 - - [27/Nov/2023 18:18:20] "GET /esp HTTP/1.1" 200 -
+192.168.1.17 - - [27/Nov/2023 18:18:21] "GET /esp HTTP/1.1" 200 -
+Received data:  #166483--0#166784--0#166993--4095#167203--0#167413--2813#167623--0#167833--2605#168043--0#168353--2291#168563--0#168774--4095#168984--0#169193--1534#169403--0#169613--1235#169924--0#170133--966#170343--0#170553--865#170763--0 --- Device id:  1
+Error: (sqlite3.OperationalError) database is locked
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+192.168.1.23 - - [27/Nov/2023 18:18:28] "POST /esp HTTP/1.1" 200 -
+Received data:  #177194--0#177494--0#177703--1019#177913--0#178123--822#178333--0#178543--862#178753--0#179063--570#179273--0#179483--0#179693--0#179903--0#180113--0#180323--0#180533--272#180843--0#181053--735#181263--0#181473--4095 --- Device id:  1
+Received data:  #187363--4095#187564--1595#187873--0#188083--1150#188293--0#188503--784#188713--0#188923--464#189133--0#189443--0#189653--0#189863--0#190074--4095#190283--0#190493--932#190703--0#190913--1855#191223--0#191433--3017#191643--0 --- Device id:  1
+192.168.1.17 - - [27/Nov/2023 18:18:42] "GET /esp HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: database is locked
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 1458, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/krypto/Documents/git/pj01/flaskServer/website/esphandle.py", line 32, in esp_handle
+    datas = data1.query.all()
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/query.py", line 2693, in all
+    return self._iter().all()  # type: ignore
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/query.py", line 2847, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/session.py", line 2308, in execute
+    return self._execute_internal(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/session.py", line 2190, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/context.py", line 293, in orm_execute_statement
+    result = conn.execute(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1416, in execute
+    return meth(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/sql/elements.py", line 516, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1639, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 2343, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) database is locked
+[SQL: SELECT data1.id AS data1_id, data1.data AS data1_data, data1.date AS data1_date, data1.device_id AS data1_device_id 
+FROM data1]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Error: (sqlite3.OperationalError) database is locked
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+192.168.1.23 - - [27/Nov/2023 18:18:43] "POST /esp HTTP/1.1" 200 -
+192.168.1.17 - - [27/Nov/2023 18:18:44] "GET /esp HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: database is locked
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 1458, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/krypto/Documents/git/pj01/flaskServer/website/esphandle.py", line 32, in esp_handle
+    datas = data1.query.all()
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/query.py", line 2693, in all
+    return self._iter().all()  # type: ignore
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/query.py", line 2847, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/session.py", line 2308, in execute
+    return self._execute_internal(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/session.py", line 2190, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/context.py", line 293, in orm_execute_statement
+    result = conn.execute(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1416, in execute
+    return meth(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/sql/elements.py", line 516, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1639, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 2343, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) database is locked
+[SQL: SELECT data1.id AS data1_id, data1.data AS data1_data, data1.date AS data1_date, data1.device_id AS data1_device_id 
+FROM data1]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+192.168.1.17 - - [27/Nov/2023 18:18:44] "GET /esp HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: database is locked
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 1458, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/krypto/Documents/git/pj01/flaskServer/website/esphandle.py", line 32, in esp_handle
+    datas = data1.query.all()
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/query.py", line 2693, in all
+    return self._iter().all()  # type: ignore
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/query.py", line 2847, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/session.py", line 2308, in execute
+    return self._execute_internal(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/session.py", line 2190, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/context.py", line 293, in orm_execute_statement
+    result = conn.execute(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1416, in execute
+    return meth(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/sql/elements.py", line 516, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1639, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 2343, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) database is locked
+[SQL: SELECT data1.id AS data1_id, data1.data AS data1_data, data1.date AS data1_date, data1.device_id AS data1_device_id 
+FROM data1]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+127.0.0.1 - - [27/Nov/2023 18:18:44] "GET /esp HTTP/1.1" 200 -
+Error: (sqlite3.OperationalError) database is locked
+[SQL: INSERT INTO data1 (data, date, device_id) VALUES (?, ?, ?)]
+[parameters: ('#187363--4095#187564--1595#187873--0#188083--1150#188293--0#188503--784#188713--0#188923--464#189133--0#189443--0#189653--0#189863--0#190074--4095#190283--0#190493--932#190703--0#190913--1855#191223--0#191433--3017#191643--0', '2023-11-27 11:18:40.720172', '1')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+192.168.1.23 - - [27/Nov/2023 18:18:46] "POST /esp HTTP/1.1" 200 -
+Received data:  #197004--4095#197213--0#197523--799#197733--0#197943--498#198153--27#198363--0#198574--615#198783--0#198993--985#199303--0#199513--818#199723--0#199933--1976#200143--0#200353--2909#200563--0#200873--2191#201083--0#201293--1454 --- Device id:  1
+192.168.1.17 - - [27/Nov/2023 18:18:49] "GET /esp HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: database is locked
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 1458, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/krypto/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/krypto/Documents/git/pj01/flaskServer/website/esphandle.py", line 32, in esp_handle
+    datas = data1.query.all()
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/query.py", line 2693, in all
+    return self._iter().all()  # type: ignore
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/query.py", line 2847, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/session.py", line 2308, in execute
+    return self._execute_internal(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/session.py", line 2190, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/orm/context.py", line 293, in orm_execute_statement
+    result = conn.execute(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1416, in execute
+    return meth(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/sql/elements.py", line 516, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1639, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 2343, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/krypto/.local/lib/python3.10/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) database is locked
+[SQL: SELECT data1.id AS data1_id, data1.data AS data1_data, data1.date AS data1_date, data1.device_id AS data1_device_id 
+FROM data1]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
