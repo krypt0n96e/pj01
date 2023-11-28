@@ -163,7 +163,7 @@ void app_main(void)
             http_post_json_example();
             deleteLine(1, &lines);
         }
-        vTaskDelay(pdMS_TO_TICKS(200)); // Nghỉ một giây
+        // vTaskDelay(pdMS_TO_TICKS(200)); // Nghỉ một giây
     }
     esp_vfs_spiffs_unregister(NULL);
 }
