@@ -23,10 +23,44 @@
 
 #define SPIFFS_TAG "spiffs"
 #define BUFFER_SIZE 512
+#define VALUES_PER_LINE 1
+#define TASK0_DELAY 200
+#define TASK1_DELAY 10
+int lines=1;
 
 static const char *TAG = "HTTP_POST_JSON_EXAMPLE";
 
-void deleteLine(const int line, int *lines);
+
+void deleteLine(const int line)
+{
+    FILE *src = fopen("/spiffs/data.txt", "w");
+    if (src == NULL)
+    {
+        ESP_LOGE(SPIFFS_TAG, "Error opening file in delete func");
+        return;
+    }
+    FILE *temp = fopen("/spiffs/temp.txt", "w");
+    ;
+    if (temp == NULL)
+    {
+        ESP_LOGE(TAG, "Error open temp file in delete func");
+        return;
+    }
+    char buffer[BUFFER_SIZE];
+    int count = 1;
+    while ((fgets(buffer, BUFFER_SIZE, src)) != NULL)
+    {
+        if (line != count)
+            fputs(buffer, temp);
+        count++;
+    }
+    fclose(src);
+    fclose(temp);
+    ESP_LOGI(TAG, "Delete first line successfully");
+    lines-=1;
+
+}
+
 
 static esp_err_t _http_event_handler(esp_http_client_event_t *evt)
 {
@@ -62,8 +96,8 @@ static esp_err_t _http_event_handler(esp_http_client_event_t *evt)
 
 int http_post_json_example()
 {
-    FILE *file = fopen("/spiffs/data.txt", "r");
-    if (file == NULL)
+    FILE *file2 = fopen("/spiffs/data.txt", "r");
+    if (file2 == NULL)
     {
         ESP_LOGE(TAG, "Error read file");
         return 1;
@@ -71,9 +105,9 @@ int http_post_json_example()
     ESP_LOGI(SPIFFS_TAG, "File reading...");
 
     char post_data[BUFFER_SIZE];
-    fgets(post_data, sizeof(post_data), file);
+    fgets(post_data, sizeof(post_data), file2);
     ESP_LOGI(TAG, "Data: %s", post_data);
-    fclose(file);
+    fclose(file2);
 
     esp_http_client_handle_t client = esp_http_client_init(&(esp_http_client_config_t){
         .url = "http://192.168.1.24:8888/esp",
@@ -85,8 +119,6 @@ int http_post_json_example()
 
     // Set the JSON data as the POST field
     esp_http_client_set_post_field(client, post_data, strlen(post_data));
-
-    // esp_http_client_write(client, post_data, strlen(post_data));
 
     // Perform the HTTP POST request
     esp_err_t err = esp_http_client_perform(client);
@@ -105,7 +137,20 @@ int http_post_json_example()
     esp_http_client_cleanup(client);
     return 0;
 }
+void http_post_task()
+{
+    while (1)
+    {
+        ESP_LOGE(TAG, "Lines=%d", lines);
 
+        if (lines > 1)
+        {
+            http_post_json_example();
+            deleteLine(1);
+        }
+        vTaskDelay(pdMS_TO_TICKS(TASK1_DELAY));
+    }
+}
 void app_main(void)
 {
     ESP_ERROR_CHECK(nvs_flash_init());
@@ -131,26 +176,27 @@ void app_main(void)
     // Run the HTTP POST JSON example
     pir_init_adc_channel_1(ADC1_CHANNEL_0);
 
-    int count = 0, lines = 1;
+    xTaskCreatePinnedToCore(http_post_task, "http_post_task", 4096, NULL, 0, NULL, 1);
+    int count = 0;
+
     while (1)
     {
         FILE *file = fopen("/spiffs/data.txt", "a"); // Open in append mode
         if (file == NULL)
         {
             ESP_LOGE(SPIFFS_TAG, "Error opening file");
-            continue;
+            return;
         }
-
-        if (!count)
+        if (count==0)
         {
             fprintf(file, "{\"device_id\":\"1\",\"data\":\"");
         }
-        long long int time=esp_timer_get_time() / 1000;
-        int value=adc1_get_raw(ADC1_CHANNEL_0);
-        fprintf(file, "#%lld--%d", time,value);
-        ESP_LOGI(TAG, "Writing #%lld--%d", time,value);
+        long long int time = esp_timer_get_time() / 1000;
+        int value = adc1_get_raw(ADC1_CHANNEL_0);
+        fprintf(file, "#%lld--%d", time, value);
+        ESP_LOGI(TAG, "Writing #%lld--%d", time, value);
         count++;
-        if (count == 20)
+        if (count == VALUES_PER_LINE)
         {
             fprintf(file, "\"}\n");
             lines++;
@@ -158,41 +204,9 @@ void app_main(void)
             count = 0;
         }
         fclose(file);
-        if (lines > 1)
-        {
-            http_post_json_example();
-            deleteLine(1, &lines);
-        }
-        // vTaskDelay(pdMS_TO_TICKS(200)); // Nghỉ một giây
-    }
-    esp_vfs_spiffs_unregister(NULL);
-}
 
-void deleteLine(const int line, int *lines)
-{
-    FILE *src = fopen("/spiffs/data.txt", "w"); // Open in append mode
-    if (src == NULL)
-    {
-        ESP_LOGE(SPIFFS_TAG, "Error opening file in delete func");
-        return;
+        vTaskDelay(pdMS_TO_TICKS(TASK0_DELAY));
     }
-    FILE *temp = fopen("/spiffs/temp.txt", "w");
-    ;
-    if (temp == NULL)
-    {
-        ESP_LOGE(TAG, "Error open temp file in delete func");
-        return;
-    }
-    char buffer[BUFFER_SIZE];
-    int count = 1;
-    while ((fgets(buffer, BUFFER_SIZE, src)) != NULL)
-    {
-        if (line != count)
-            fputs(buffer, temp);
-        count++;
-    }
-    *lines-=1;
-    ESP_LOGI(TAG, "Delete first line successfully");
-    fclose(src);
-    fclose(temp);
+
+    esp_vfs_spiffs_unregister(NULL);
 }

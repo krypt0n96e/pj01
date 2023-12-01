@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Only display the top 100 entries
         var topTable = rawData.slice(0, 50);
-        var topChart = rawData.slice(0, 10);
+        var topChart = rawData.slice(0, 50);
 
         // Parse and process the data
         const parsedData = topChart.map(entry => {
