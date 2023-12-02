@@ -15,7 +15,7 @@
 static const char *TAG_HTTP = "HTTP_CLIENT";
 const static char *TAG_ADC = "ONE_SHOT_ADC";
 static int logs;
-#define EXAMPLE_ADC1_CHAN0 ADC_CHANNEL_0
+#define EXAMPLE_ADC1_CHAN0 ADC_CHANNEL_4
 #define DEVICE_ID 1
 #define HOST "http://192.168.1.24:8888"
 #define MAX_HTTP_OUTPUT_BUFFER 256
@@ -84,10 +84,10 @@ void http_post_json_handle(char *post_data)
 
 void http_get_handle()
 {
-    char* url= (char *)pvPortMalloc(40);
+    char *url = (char *)pvPortMalloc(40);
     sprintf(url, "%s/device?id=%d", HOST, DEVICE_ID);
 
-    char* output_buffer= (char *)pvPortMalloc(MAX_HTTP_OUTPUT_BUFFER + 1);
+    char *output_buffer = (char *)pvPortMalloc(MAX_HTTP_OUTPUT_BUFFER + 1);
     int content_length = 0;
     esp_http_client_config_t config = {
         .url = url,
@@ -115,8 +115,8 @@ void http_get_handle()
                          esp_http_client_get_status_code(client),
                          esp_http_client_get_content_length(client));
 
-                logs=output_buffer[23]-'0';
-                ESP_LOGI(TAG_HTTP,"LOG: %d",logs);
+                logs = output_buffer[23] - '0';
+                ESP_LOGI(TAG_HTTP, "LOG: %d", logs);
             }
             else
             {
@@ -129,7 +129,6 @@ void http_get_handle()
     esp_http_client_cleanup(client);
     vPortFree(url);
     vPortFree(output_buffer);
-
 }
 
 void oneshot_adc_read(int *value)
@@ -143,7 +142,8 @@ void oneshot_adc_read(int *value)
 
     //-------------ADC1 Config---------------//
     adc_oneshot_chan_cfg_t config = {
-        .bitwidth = ADC_BITWIDTH_DEFAULT,
+        .atten = ADC_ATTEN_DB_11,
+        .bitwidth = ADC_BITWIDTH_12,
     };
     ESP_ERROR_CHECK(adc_oneshot_config_channel(adc1_handle, EXAMPLE_ADC1_CHAN0, &config));
     ESP_ERROR_CHECK(adc_oneshot_read(adc1_handle, EXAMPLE_ADC1_CHAN0, value));
@@ -196,12 +196,12 @@ void http_get_data(void *pvParameters)
         if (logs == 1)
         {
             vTaskResume(task_http_post_data);
-            ESP_LOGI(TAG_HTTP,"LOG START");
+            ESP_LOGI(TAG_HTTP, "LOG START");
         }
         else
         {
             vTaskSuspend(task_http_post_data);
-            ESP_LOGI(TAG_HTTP,"LOG STOP");
+            ESP_LOGI(TAG_HTTP, "LOG STOP");
         }
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
