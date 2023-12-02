@@ -77,7 +77,7 @@ void http_post_json_handle(char *post_data)
     {
         ESP_LOGE(TAG_HTTP, "HTTP POST request failed: %s", esp_err_to_name(err));
     }
-
+    esp_http_client_close(client);
     // Clean up
     esp_http_client_cleanup(client);
 }
@@ -125,6 +125,8 @@ void http_get_handle()
         }
     }
     esp_http_client_close(client);
+    // Clean up
+    esp_http_client_cleanup(client);
     vPortFree(url);
     vPortFree(output_buffer);
 
@@ -214,6 +216,7 @@ void app_main(void)
     ESP_ERROR_CHECK(example_connect());
 
     xTaskCreatePinnedToCore(http_get_data, "Task0", 4096, NULL, 1, &task_http_get_data, 0);
+    // xTaskCreate(http_get_data, "HTTP_GET", 4096, NULL, 1, NULL);
     xTaskCreatePinnedToCore(http_post_data, "Task1", 4096, NULL, 2, &task_http_post_data, 1);
     vTaskSuspend(task_http_post_data);
     // vTaskDelete(task_http_post_data);
