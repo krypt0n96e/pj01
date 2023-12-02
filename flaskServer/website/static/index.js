@@ -185,6 +185,15 @@ function deleteData(dataId) {
   });
 }
 
+function deleteAllData() {
+  fetch("/delete-all", {
+    method: "POST",
+    body: "200",
+  }).then((_res) => {
+    window.location.href = "/";
+  });
+}
+
 function statusChange(log) {
   fetch("/status-change", {
     method: "POST",

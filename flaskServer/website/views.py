@@ -34,6 +34,19 @@ def delete_data():
     flash('Data delete!', category='success')
     return jsonify({})
 
+@views.route('/delete-all', methods=['POST'])
+def delete_all():  
+    try:
+        data_objects = data1.query.all()
+        for data in data_objects:
+            db.session.delete(data)
+        db.session.commit()
+        flash('Data delete!', category='success')
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    return jsonify({})
+
+
 @views.route('/status-change', methods=['POST'])
 def status_change():
     log = json.loads(request.data)
