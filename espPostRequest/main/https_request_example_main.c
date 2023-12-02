@@ -116,22 +116,26 @@ void app_main(void)
     // Run the HTTP POST JSON example
     while (1)
     {
-        printf("thoi diem bat dau gui: %ld\n", esp_log_timestamp());
+        uint32_t current_time_miliseconds=esp_log_timestamp();
+        
+        printf("thoi diem bat dau gui: %ld\n", current_time_miliseconds);
         strcpy(post_data, "{\"device_id\":\"1\",\"data\":\"");
 
         int value;
         oneshot_adc_read(&value);
 
-        // Lấy thời gian hiện tại ở đơn vị giây
-        uint32_t current_time_miliseconds;
         current_time_miliseconds=esp_log_timestamp();
+
 
         snprintf(s, 100, "%d+time:%ld\"}", value,current_time_miliseconds);
         printf("%s\n", s);
         strcat(post_data, s);
         printf("%s\n", post_data);
         http_post_json_example(post_data);
-        printf("thoi diem gui xong: %ld\n--------------------------\n", esp_log_timestamp());
+
+        current_time_miliseconds=esp_log_timestamp();
+
+        printf("thoi diem gui xong: %ld\n--------------------------\n", current_time_miliseconds);
         vTaskDelay(200 / portTICK_PERIOD_MS);
     }
     
