@@ -84,17 +84,16 @@ void http_post_json_handle(char *post_data)
 
 void http_get_handle()
 {
-    char url[40];
+    char* url= (char *)pvPortMalloc(40);
     sprintf(url, "%s/device?id=%d", HOST, DEVICE_ID);
 
-    char output_buffer[MAX_HTTP_OUTPUT_BUFFER + 1] = {0};
+    char* output_buffer= (char *)pvPortMalloc(MAX_HTTP_OUTPUT_BUFFER + 1);
     int content_length = 0;
     esp_http_client_config_t config = {
         .url = url,
+        .method = HTTP_METHOD_GET,
     };
     esp_http_client_handle_t client = esp_http_client_init(&config);
-
-    esp_http_client_set_method(client, HTTP_METHOD_GET);
     esp_err_t err = esp_http_client_open(client, 0);
     if (err != ESP_OK)
     {
@@ -116,8 +115,7 @@ void http_get_handle()
                          esp_http_client_get_status_code(client),
                          esp_http_client_get_content_length(client));
 
-                logs=output_buffer[21]-'0';
-                printf("LOG: %c",output_buffer[21]);
+                logs=output_buffer[23]-'0';
                 ESP_LOGI(TAG_HTTP,"LOG: %d",logs);
             }
             else
@@ -127,6 +125,9 @@ void http_get_handle()
         }
     }
     esp_http_client_close(client);
+    vPortFree(url);
+    vPortFree(output_buffer);
+
 }
 
 void oneshot_adc_read(int *value)
