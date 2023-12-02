@@ -136,7 +136,7 @@ void app_main(void)
         current_time_miliseconds=esp_log_timestamp();
 
         printf("thoi diem gui xong: %ld\n--------------------------\n", current_time_miliseconds);
-        vTaskDelay(200 / portTICK_PERIOD_MS);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
     
 }
