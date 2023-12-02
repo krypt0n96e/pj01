@@ -7,9 +7,12 @@ document.addEventListener("DOMContentLoaded", function () {
     tableBody.empty(); // Clear existing content
 
     topEntries.forEach(function (entry) {
+      // Add a class to the second column for styling
+      var rowData = '<td class="multiline">' + entry.data + '</td>';
+
       var row = '<tr>' +
         '<td>' + entry.id + '</td>' +
-        '<td>' + entry.data + '</td>' +
+        rowData +
         '<td>' + entry.date + '</td>' +
         '<td>' + entry.device_id + '</td>' +
         '<td><button onclick="deleteData(' + entry.id + ')" class="btn btn-danger">Delete</button></td>' +
@@ -57,11 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
         options: {
           scales: {
             x: {
-              type: 'time',
-              time: {
-                unit: 'millisecond', // Set the unit to 'millisecond'
-                tooltipFormat: 'SSS [ms]', // Format for milliseconds
-              },
+              // type: 'linear',
             },
             y: {
               min: 0,
@@ -80,20 +79,38 @@ document.addEventListener("DOMContentLoaded", function () {
     $.ajax({
       url: '/esp',
       method: 'GET',
-      success: function (dataList) {
-        
-        // Sort dataList based on the date in descending order
-        dataList.sort(function (a, b) {
+      success: function (rawData) {
+
+
+
+        // Sort rawData based on the date in descending order
+        rawData.sort(function (a, b) {
           return b.id - a.id;
         });
 
         // Only display the top 100 entries
-        var topEntries = dataList.slice(0, 50);
+        var topTable = rawData.slice(0, 50);
+        var topChart = rawData.slice(0, 50);
 
-        updateTable(topEntries);
-        // Assuming dataList is your array of data objects
-        var labels = topEntries.map(entry => new Date(entry.date));
-        var values = topEntries.map(entry => Number(entry.data));
+        // Parse and process the data
+        const parsedData = topChart.map(entry => {
+          const items = entry.data.split('#').filter(Boolean);
+          const data = items.map(item => {
+            const [time, value] = item.split('--');
+            return { time, value: parseInt(value) }; // Convert value to integer
+          });
+          return data;
+        });
+
+        // Flatten the array of arrays
+        const flatData = parsedData.reduce((acc, val) => acc.concat(val), []);
+        // Sort the flattened data based on time from smallest to largest
+        flatData.sort((a, b) => a.time - b.time);
+
+        updateTable(topTable);
+        // Assuming rawData is your array of data objects
+        var labels = flatData.map(entry => entry.time);
+        var values = flatData.map(entry => entry.value);
 
         // Draw the line chart
         drawLineChart(labels, values);

@@ -31,7 +31,7 @@ def delete_data():
     if data:
         db.session.delete(data)
         db.session.commit()
-    flash('Data delete!', category='success')
+    flash('Data deleted!', category='success')
     return jsonify({})
 
 @views.route('/delete-all', methods=['POST'])
@@ -41,11 +41,10 @@ def delete_all():
         for data in data_objects:
             db.session.delete(data)
         db.session.commit()
-        flash('Data delete!', category='success')
+        flash('All data deleted!', category='success')
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     return jsonify({})
-
 
 @views.route('/status-change', methods=['POST'])
 def status_change():

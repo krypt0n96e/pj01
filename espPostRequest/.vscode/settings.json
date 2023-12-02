@@ -13,5 +13,17 @@
     "idf.port": "/dev/ttyUSB0",
     "idf.pythonBinPath": "/home/krypto/.espressif/python_env/idf5.1_py3.10_env/bin/python",
     "idf.toolsPath": "/home/krypto/.espressif",
-    "idf.flashType": "UART"
+    "idf.flashType": "UART",
+    "files.associations": {
+        "*.tcc": "c",
+        "ratio": "c",
+        "system_error": "c",
+        "array": "c",
+        "functional": "c",
+        "regex": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c",
+        "temp": "c"
+    }
 }
