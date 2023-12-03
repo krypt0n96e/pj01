@@ -16,12 +16,12 @@
 #define DEVICE_ID 1
 #define HOST "http://192.168.1.24:8888"
 #define MAX_HTTP_OUTPUT_BUFFER 256
-#define MAX_POST_SIZE 2048
+#define MAX_POST_SIZE 4096
 #define TEMP_SIZE0 10
-#define VALUE_PER_POST 100
+#define VALUE_PER_POST 200
 #define TASK0_DELAY 500
-#define TASK1_DELAY 900
-#define TASK2_DELAY 10
+#define TASK1_DELAY 2900
+#define TASK2_DELAY 15
 
 static const char *TAG_HTTP = "HTTP_CLIENT";
 const static char *TAG_ADC = "ONE_SHOT_ADC";
@@ -265,7 +265,7 @@ void app_main(void)
 
     xTaskCreatePinnedToCore(http_get_data, "Task0", 4096, NULL, 1, &task_http_get_data, 1);
     // xTaskCreate(http_get_data, "HTTP_GET", 4096, NULL, 1, NULL);
-    xTaskCreatePinnedToCore(http_post_data, "Task1", 4096, NULL, 2, &task_http_post_data, 1);
+    xTaskCreatePinnedToCore(http_post_data, "Task1", 6144, NULL, 2, &task_http_post_data, 1);
     xTaskCreatePinnedToCore(adc_oneshot_write, "Task2", 4096, NULL, 1, &task_adc_oneshot_write, 0);
     vTaskSuspend(task_http_post_data);
     // vTaskDelete(task_http_post_data);
