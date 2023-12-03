@@ -31,18 +31,24 @@ document.addEventListener("DOMContentLoaded", function () {
   // Function to draw the line chart
   function drawLineChart(labels, data) {
     var ctx = document.getElementById('myChart').getContext('2d');
-
+  
+    // Calculate min and max values for the x-axis
+    var xMin = Math.min(...labels);
+    var xMax = Math.max(...labels);
+  
     // Check if the chart instance exists
     if (myChart) {
       // If it does, update the chart data and labels
       myChart.data.labels = labels;
       myChart.data.datasets[0].data = data;
+      myChart.options.scales.x.min = xMin;
+      myChart.options.scales.x.max = xMax;
       myChart.update(); // Update the chart
     } else {
       // If the chart instance doesn't exist, create a new chart
       console.log('Labels:', labels);
       console.log('Data:', data);
-
+  
       myChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -50,17 +56,19 @@ document.addEventListener("DOMContentLoaded", function () {
           datasets: [{
             label: 'Data Trends',
             data: data,
-            borderColor: 'rgba(75, 192, 192, 1)',
+            borderColor: 'rgba(32, 135, 71, 1)',
             borderWidth: 1,
             fill: true,
-            pointRadius: 3,
-            pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+            pointRadius: 2,
+            pointBackgroundColor: 'rgba(32, 135, 71, 1)',
           }]
         },
         options: {
           scales: {
             x: {
-              // type: 'linear',
+              type: 'linear',
+              min: xMin,
+              max: xMax,
             },
             y: {
               min: 0,
@@ -71,6 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
   }
+  
 
 
 
@@ -94,9 +103,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Parse and process the data
         const parsedData = topChart.map(entry => {
-          const items = entry.data.split('#').filter(Boolean);
+          const items = entry.data.split('?').filter(Boolean);
           const data = items.map(item => {
-            const [time, value] = item.split('--');
+            const [time, value] = item.split('&');
             return { time, value: parseInt(value) }; // Convert value to integer
           });
           return data;

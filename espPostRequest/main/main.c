@@ -20,8 +20,8 @@
 #define TEMP_SIZE0 10
 #define VALUE_PER_POST 200
 #define TASK0_DELAY 500
-#define TASK1_DELAY 2900
-#define TASK2_DELAY 15
+#define TASK1_DELAY 2000
+#define TASK2_DELAY 20
 
 static const char *TAG_HTTP = "HTTP_CLIENT";
 const static char *TAG_ADC = "ONE_SHOT_ADC";
@@ -133,7 +133,7 @@ void http_get_handle()
                          esp_http_client_get_content_length(client));
 
                 logs = output_buffer[23] - '0';
-                ESP_LOGI(TAG_HTTP, "LOG: %d", logs);
+                // ESP_LOGI(TAG_HTTP, "LOG: %d", logs);
             }
             else
             {
@@ -172,7 +172,7 @@ void oneshot_adc_read(int *value)
 void http_post_data(void *pvParameters)
 {
     // JSON data to be sent in the POST request
-    char *post_data = (char *)pvPortMalloc(MAX_POST_SIZE+41);
+    char *post_data = (char *)pvPortMalloc(MAX_POST_SIZE + 41);
     if (post_data == NULL)
     {
         ESP_LOGE(TAG_HTTP, "Failed to allocate memory for post_data");
@@ -184,18 +184,14 @@ void http_post_data(void *pvParameters)
     {
         if (writeStage)
         {
-            uint32_t current_time_miliseconds = esp_log_timestamp();
-
-            printf("thoi diem bat dau gui: %ld\n", current_time_miliseconds);
-            snprintf(post_data, MAX_POST_SIZE+40, "{\"device_id\":\"%d\",\"data\":\"%s\"}", DEVICE_ID, temp[tempPostIndex]);
-            printf("%s\n", post_data);
-            if(http_post_json_handle(post_data)==0){
-                writeStage=0;
+            printf("thoi diem bat dau gui: \n");
+            snprintf(post_data, MAX_POST_SIZE + 40, "{\"device_id\":\"%d\",\"data\":\"%s\"}", DEVICE_ID, temp[tempPostIndex]);
+            // printf("%s\n", post_data);
+            if (http_post_json_handle(post_data) == 0)
+            {
+                writeStage = 0;
             }
-
-            current_time_miliseconds = esp_log_timestamp();
-
-            printf("thoi diem gui xong: %ld\n--------------------------\n", current_time_miliseconds);
+            printf("thoi diem gui xong:\n--------------------------\n");
         }
 
         vTaskDelay(TASK1_DELAY / portTICK_PERIOD_MS);
@@ -203,17 +199,19 @@ void http_post_data(void *pvParameters)
     vPortFree(post_data);
 }
 
-
 void http_get_data(void *pvParameters)
 {
     while (1)
     {
         http_get_handle();
-        if (logs == 1 && (eTaskGetState(task_adc_oneshot_write) == eSuspended))
+        if (logs == 1)
         {
-            vTaskResume(task_http_post_data);
-            vTaskResume(task_adc_oneshot_write);
-            ESP_LOGI(TAG_HTTP, "LOG START");
+            if ((eTaskGetState(task_adc_oneshot_write) == eSuspended))
+            {
+                vTaskResume(task_http_post_data);
+                vTaskResume(task_adc_oneshot_write);
+                ESP_LOGI(TAG_HTTP, "LOG START");
+            }
         }
         else if (eTaskGetState(task_adc_oneshot_write) == eBlocked)
         {
@@ -235,9 +233,9 @@ void adc_oneshot_write(void *pvParameters)
         int value;
         oneshot_adc_read(&value);
         uint32_t current_time_miliseconds = esp_log_timestamp();
-        sprintf(temp[tempWriteIndex] + strlen(temp[tempWriteIndex]), "#%ld--%d", current_time_miliseconds, value);
+        sprintf(temp[tempWriteIndex] + strlen(temp[tempWriteIndex]), "?%ld&%d", current_time_miliseconds, value);
         count++;
-        printf("%d",count);
+        printf("%d", count);
         if (count == VALUE_PER_POST)
         {
             count = 0;
@@ -263,10 +261,11 @@ void app_main(void)
     ESP_ERROR_CHECK(esp_event_loop_create_default());
     ESP_ERROR_CHECK(example_connect());
 
-    xTaskCreatePinnedToCore(http_get_data, "Task0", 4096, NULL, 1, &task_http_get_data, 1);
+    xTaskCreatePinnedToCore(http_get_data, "Task0", 4096, NULL, 1, &task_http_get_data, 0);
     // xTaskCreate(http_get_data, "HTTP_GET", 4096, NULL, 1, NULL);
-    xTaskCreatePinnedToCore(http_post_data, "Task1", 6144, NULL, 2, &task_http_post_data, 1);
-    xTaskCreatePinnedToCore(adc_oneshot_write, "Task2", 4096, NULL, 1, &task_adc_oneshot_write, 0);
+    xTaskCreatePinnedToCore(http_post_data, "Task1", 6144, NULL, 2, &task_http_post_data, 0);
+    xTaskCreatePinnedToCore(adc_oneshot_write, "Task2", 4096, NULL, 1, &task_adc_oneshot_write, 1);
     vTaskSuspend(task_http_post_data);
+    vTaskSuspend(task_adc_oneshot_write);
     // vTaskDelete(task_http_post_data);
 }
