@@ -14,13 +14,13 @@
 
 #define EXAMPLE_ADC1_CHAN0 ADC_CHANNEL_6
 #define DEVICE_ID 1
-#define HOST "http://192.168.1.24:8888"
+#define HOST "http://192.168.104.79:8888"
 #define MAX_HTTP_OUTPUT_BUFFER 256
 #define MAX_POST_SIZE 4096
 #define TEMP_SIZE0 10
 #define VALUE_PER_POST 200
-#define TASK0_DELAY 500
-#define TASK1_DELAY 2000
+#define TASK0_DELAY 1000
+#define TASK1_DELAY 1000
 #define TASK2_DELAY 20
 
 static const char *TAG_HTTP = "HTTP_CLIENT";
@@ -70,7 +70,7 @@ static esp_err_t _http_event_handler(esp_http_client_event_t *evt)
 int http_post_json_handle(char *post_data)
 {
     esp_http_client_handle_t client = esp_http_client_init(&(esp_http_client_config_t){
-        .url = "http://192.168.1.24:8888/esp",
+        .url = "http://192.168.104.79:8888/esp",
         .event_handler = _http_event_handler,
         .method = HTTP_METHOD_POST,
     });
@@ -204,18 +204,20 @@ void http_get_data(void *pvParameters)
     while (1)
     {
         http_get_handle();
+        printf("\n---------------------%d--------------------\n",eTaskGetState(task_adc_oneshot_write));
         if (logs == 1)
         {
-            if ((eTaskGetState(task_adc_oneshot_write) == eSuspended))
+            if (eTaskGetState(task_adc_oneshot_write) == eReady||eTaskGetState(task_adc_oneshot_write) == eSuspended)
+            // if(1)
             {
-                vTaskResume(task_http_post_data);
+                // vTaskResume(task_http_post_data);
                 vTaskResume(task_adc_oneshot_write);
                 ESP_LOGI(TAG_HTTP, "LOG START");
             }
         }
-        else if (eTaskGetState(task_adc_oneshot_write) == eBlocked)
+        else if (eTaskGetState(task_adc_oneshot_write) == eRunning||eTaskGetState(task_adc_oneshot_write) == eBlocked)
         {
-            vTaskSuspend(task_http_post_data);
+            // vTaskSuspend(task_http_post_data);
             vTaskSuspend(task_adc_oneshot_write);
             ESP_LOGI(TAG_HTTP, "LOG STOP");
         }
@@ -227,6 +229,12 @@ void adc_oneshot_write(void *pvParameters)
 {
     int count = 0;
     uint8_t tempWriteIndex = 0;
+    TickType_t xLastWakeTime;
+    const TickType_t xFrequency = pdMS_TO_TICKS(TASK2_DELAY);
+
+    // Khởi tạo thời điểm cuối cùng xLastWakeTime
+    xLastWakeTime = xTaskGetTickCount();
+
     while (1)
     {
 
@@ -248,7 +256,8 @@ void adc_oneshot_write(void *pvParameters)
             }
             *temp[tempWriteIndex] = '\0';
         }
-        vTaskDelay(TASK2_DELAY / portTICK_PERIOD_MS);
+        // vTaskDelay(TASK2_DELAY / portTICK_PERIOD_MS);
+        vTaskDelayUntil(&xLastWakeTime, xFrequency);
         ESP_LOGI("ADC_WRITE", "ADC write done");
     }
 }
@@ -261,11 +270,11 @@ void app_main(void)
     ESP_ERROR_CHECK(esp_event_loop_create_default());
     ESP_ERROR_CHECK(example_connect());
 
-    xTaskCreatePinnedToCore(http_get_data, "Task0", 4096, NULL, 1, &task_http_get_data, 0);
+    xTaskCreatePinnedToCore(http_get_data, "Task0", 8192, NULL, 1, &task_http_get_data, 0);
     // xTaskCreate(http_get_data, "HTTP_GET", 4096, NULL, 1, NULL);
-    xTaskCreatePinnedToCore(http_post_data, "Task1", 6144, NULL, 2, &task_http_post_data, 0);
-    xTaskCreatePinnedToCore(adc_oneshot_write, "Task2", 4096, NULL, 1, &task_adc_oneshot_write, 1);
-    vTaskSuspend(task_http_post_data);
-    vTaskSuspend(task_adc_oneshot_write);
+    xTaskCreatePinnedToCore(http_post_data, "Task1", 8192, NULL, 2, &task_http_post_data, 0);
+    xTaskCreatePinnedToCore(adc_oneshot_write, "Task2", 8192, NULL, 1, &task_adc_oneshot_write, 1);
+    // vTaskSuspend(task_http_post_data);
+    // vTaskSuspend(task_adc_oneshot_write);
     // vTaskDelete(task_http_post_data);
 }

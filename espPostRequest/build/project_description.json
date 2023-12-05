@@ -1,7 +1,7 @@
 {
     "version":            "1",
     "project_name":       "project-name2",
-    "project_version":    "da0e4ef-dirty",
+    "project_version":    "b9d3729-dirty",
     "project_path":       "/home/krypto/Documents/git/pj01/espPostRequest",
     "idf_path":           "/home/krypto/esp/esp-idf",
     "build_dir":          "/home/krypto/Documents/git/pj01/espPostRequest/build",

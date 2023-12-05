@@ -14,8 +14,8 @@ def home():
     db.session.commit()
     if request.method == 'POST': 
         rawdata = request.form.get('data')#Gets the data from the HTML
-        # rawid = request.form.get('device_id')#Gets the id from the HTML 
-        data = data1(data=rawdata,device_id=1)  #providing the schema for the data
+        rawid = request.form.get('device_id')#Gets the id from the HTML 
+        data = data1(data=rawdata,device_id=rawid)  #providing the schema for the data
         db.session.add(data) #adding the data to the database 
         db.session.commit()
         flash('Data added!', category='success')
