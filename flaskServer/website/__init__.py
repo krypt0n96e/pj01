@@ -20,6 +20,10 @@ def create_app():
 
     app.register_blueprint(esphandle, url_prefix='/')
 
+    from .data_export import data_export
+
+    app.register_blueprint(data_export, url_prefix='/')
+
     
     
     with app.app_context():

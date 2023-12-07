@@ -1,7 +1,7 @@
 {
     "version":            "1",
     "project_name":       "project-name2",
-    "project_version":    "e0473da-dirty",
+    "project_version":    "b9d3729-dirty",
     "project_path":       "/home/krypto/Documents/git/pj01/espPostRequest",
     "idf_path":           "/home/krypto/esp/esp-idf",
     "build_dir":          "/home/krypto/Documents/git/pj01/espPostRequest/build",
@@ -790,7 +790,7 @@
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "file": "/home/krypto/Documents/git/pj01/espPostRequest/build/esp-idf/main/libmain.a",
-            "sources": [ "/home/krypto/Documents/git/pj01/espPostRequest/main/https_request_example_main.c", "/home/krypto/Documents/git/pj01/espPostRequest/main/time_sync.c", "/home/krypto/Documents/git/pj01/espPostRequest/build/server_root_cert.pem.S", "/home/krypto/Documents/git/pj01/espPostRequest/build/local_server_cert.pem.S" ],
+            "sources": [ "/home/krypto/Documents/git/pj01/espPostRequest/main/main.c", "/home/krypto/Documents/git/pj01/espPostRequest/main/time_sync.c", "/home/krypto/Documents/git/pj01/espPostRequest/build/server_root_cert.pem.S", "/home/krypto/Documents/git/pj01/espPostRequest/build/local_server_cert.pem.S" ],
             "include_dirs": [ "include" ]
         },
         "mbedtls": {

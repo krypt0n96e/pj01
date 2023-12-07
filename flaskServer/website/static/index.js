@@ -7,9 +7,12 @@ document.addEventListener("DOMContentLoaded", function () {
     tableBody.empty(); // Clear existing content
 
     topEntries.forEach(function (entry) {
+      // Add a class to the second column for styling
+      var rowData = '<td class="multiline">' + entry.data + '</td>';
+
       var row = '<tr>' +
         '<td>' + entry.id + '</td>' +
-        '<td>' + entry.data + '</td>' +
+        rowData +
         '<td>' + entry.date + '</td>' +
         '<td>' + entry.device_id + '</td>' +
         '<td><button onclick="deleteData(' + entry.id + ')" class="btn btn-danger">Delete</button></td>' +
@@ -28,18 +31,24 @@ document.addEventListener("DOMContentLoaded", function () {
   // Function to draw the line chart
   function drawLineChart(labels, data) {
     var ctx = document.getElementById('myChart').getContext('2d');
-
+  
+    // Calculate min and max values for the x-axis
+    var xMin = Math.min(...labels);
+    var xMax = Math.max(...labels);
+  
     // Check if the chart instance exists
     if (myChart) {
       // If it does, update the chart data and labels
       myChart.data.labels = labels;
       myChart.data.datasets[0].data = data;
+      myChart.options.scales.x.min = xMin;
+      myChart.options.scales.x.max = xMax;
       myChart.update(); // Update the chart
     } else {
       // If the chart instance doesn't exist, create a new chart
       console.log('Labels:', labels);
       console.log('Data:', data);
-
+  
       myChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -47,31 +56,30 @@ document.addEventListener("DOMContentLoaded", function () {
           datasets: [{
             label: 'Data Trends',
             data: data,
-            borderColor: 'rgba(75, 192, 192, 1)',
+            borderColor: 'rgba(32, 135, 71, 1)',
             borderWidth: 1,
             fill: true,
-            pointRadius: 3,
-            pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+            pointRadius: 2,
+            pointBackgroundColor: 'rgba(32, 135, 71, 1)',
           }]
         },
         options: {
           scales: {
             x: {
-              type: 'time',
-              time: {
-                unit: 'millisecond', // Set the unit to 'millisecond'
-                tooltipFormat: 'SSS [ms]', // Format for milliseconds
-              },
+              type: 'linear',
+              min: xMin,
+              max: xMax,
             },
             y: {
               min: 0,
-              max: 5000,
+              max: 4100,
             }
           }
         }
       });
     }
   }
+  
 
 
 
@@ -80,20 +88,38 @@ document.addEventListener("DOMContentLoaded", function () {
     $.ajax({
       url: '/esp',
       method: 'GET',
-      success: function (dataList) {
-        
-        // Sort dataList based on the date in descending order
-        dataList.sort(function (a, b) {
+      success: function (rawData) {
+
+
+
+        // Sort rawData based on the date in descending order
+        rawData.sort(function (a, b) {
           return b.id - a.id;
         });
 
         // Only display the top 100 entries
-        var topEntries = dataList.slice(0, 50);
+        var topTable = rawData.slice(0, 50);
+        var topChart = rawData.slice(0, 5);
 
-        updateTable(topEntries);
-        // Assuming dataList is your array of data objects
-        var labels = topEntries.map(entry => new Date(entry.date));
-        var values = topEntries.map(entry => Number(entry.data));
+        // Parse and process the data
+        const parsedData = topChart.map(entry => {
+          const items = entry.data.split('?').filter(Boolean);
+          const data = items.map(item => {
+            const [time, value] = item.split('&');
+            return { time, value: parseInt(value) }; // Convert value to integer
+          });
+          return data;
+        });
+
+        // Flatten the array of arrays
+        const flatData = parsedData.reduce((acc, val) => acc.concat(val), []);
+        // Sort the flattened data based on time from smallest to largest
+        flatData.sort((a, b) => a.time - b.time);
+
+        updateTable(topTable);
+        // Assuming rawData is your array of data objects
+        var labels = flatData.map(entry => entry.time);
+        var values = flatData.map(entry => entry.value);
 
         // Draw the line chart
         drawLineChart(labels, values);
@@ -180,6 +206,15 @@ function deleteData(dataId) {
   fetch("/delete-data", {
     method: "POST",
     body: JSON.stringify({ dataId: dataId }),
+  }).then((_res) => {
+    window.location.href = "/";
+  });
+}
+
+function deleteAllData() {
+  fetch("/delete-all", {
+    method: "POST",
+    body: "200",
   }).then((_res) => {
     window.location.href = "/";
   });

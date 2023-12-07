@@ -13,3 +13,4 @@ class device1(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     logs = db.Column(db.Integer)
     data = db.relationship('data1', backref='logs', lazy=True)
+    

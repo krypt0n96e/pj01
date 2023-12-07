@@ -1,128 +1,134 @@
 /* Thiết lập kiểu dáng cho nút gạt */
 div.top {
-    margin-top: 1%;
+  margin-top: 1%;
 }
 
 h2.yellow {
-    color: #5e4a06;
+  color: #5e4a06;
 }
 
 span.top {
-    position: relative;
-    top: 5px;
+  position: relative;
+  top: 5px;
 }
 
 .toggle {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
 }
 
 .toggle input {
-    opacity: 0;
-    width: 0;
-    height: 0;
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
 .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
-input:checked+.slider {
-    background-color: #065e32;
+input:checked + .slider {
+  background-color: #065e32;
 }
 
-input.color-red:checked+.slider {
-    background-color: #5e1306
+input.color-red:checked + .slider {
+  background-color: #5e1306;
 }
 
-input.color-blue:checked+.slider {
-    background-color: #062f5e;
+input.color-blue:checked + .slider {
+  background-color: #062f5e;
 }
 
-input.color-yellow:checked+.slider {
-    background-color: #5e4a06;
+input.color-yellow:checked + .slider {
+  background-color: #5e4a06;
 }
 
-input:checked+.slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
 }
-
 
 #status {
-    margin-top: 10px;
-    font-weight: bold;
-    font-size: 23px;
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 23px;
 }
 
 .scrollable-box {
-    width: 100%;
-    /* Thêm max-width để hạn chế chiều rộng tối đa của box */
-    height: 600px;
-    border: 1px solid #ccc;
-    overflow: auto;
-    padding: 10px;
+  width: 100%;
+  /* Thêm max-width để hạn chế chiều rộng tối đa của box */
+  height: 600px;
+  border: 1px solid #ccc;
+  overflow: auto;
+  padding: 10px;
 }
 
 /* Thêm một số style để làm đẹp */
 .box-content {
-    background-color: #f0f0f0;
-    padding: 10px;
-    margin-bottom: 10px;
+  background-color: #f0f0f0;
+  padding: 10px;
+  margin-bottom: 10px;
 }
 
 /* Form add data and device toggle */
 .flex-container {
-    align-items: center;
-    display: flex;
+  align-items: center;
+  display: flex;
 }
 
 .flex-item {
-    flex: 1;
-    margin-right: 10px;
-    /* Khoảng cách giữa các div */
-    box-sizing: border-box;
-    /* Đảm bảo padding và border không làm tăng kích thước của div */
+  flex: 1;
+  margin-right: 10px;
+  /* Khoảng cách giữa các div */
+  box-sizing: border-box;
+  /* Đảm bảo padding và border không làm tăng kích thước của div */
 }
 
 /* Để loại bỏ margin-right của phần tử cuối cùng */
 .flex-item:last-child {
-    margin-right: 0;
+  margin-right: 0;
 }
 
 /* Form add data test */
 .form-container {
-    width: 50vh;
-    /* 50% chiều cao của viewpoort */
-    align-items: center;
-    /* Canh giữa theo chiều dọc */
-    justify-content: center;
-    /* Canh giữa theo chiều ngang */
+  width: 50vh;
+  /* 50% chiều cao của viewpoort */
+  align-items: center;
+  /* Canh giữa theo chiều dọc */
+  justify-content: center;
+  /* Canh giữa theo chiều ngang */
 }
 
 .form-group {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+.multiline {
+  max-width: 900px;
+  white-space: pre-wrap; /* Cho phép xuống dòng */
+  word-wrap: break-word; /* Phá vỡ từ khi cần thiết để tránh tràn */
+  overflow: visible; /* Hiển thị nội dung tràn ra ngoài */
 }

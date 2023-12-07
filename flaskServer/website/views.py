@@ -14,8 +14,8 @@ def home():
     db.session.commit()
     if request.method == 'POST': 
         rawdata = request.form.get('data')#Gets the data from the HTML
-        # rawid = request.form.get('device_id')#Gets the id from the HTML 
-        data = data1(data=rawdata,device_id=1)  #providing the schema for the data
+        rawid = request.form.get('device_id')#Gets the id from the HTML 
+        data = data1(data=rawdata,device_id=rawid)  #providing the schema for the data
         db.session.add(data) #adding the data to the database 
         db.session.commit()
         flash('Data added!', category='success')
@@ -31,7 +31,19 @@ def delete_data():
     if data:
         db.session.delete(data)
         db.session.commit()
-    flash('Data delete!', category='success')
+    flash('Data deleted!', category='success')
+    return jsonify({})
+
+@views.route('/delete-all', methods=['POST'])
+def delete_all():  
+    try:
+        data_objects = data1.query.all()
+        for data in data_objects:
+            db.session.delete(data)
+        db.session.commit()
+        flash('All data deleted!', category='success')
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     return jsonify({})
 
 @views.route('/status-change', methods=['POST'])
