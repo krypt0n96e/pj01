@@ -19,11 +19,12 @@
 #define MAX_POST_SIZE 4096
 #define TEMP_SIZE0 10
 #define VALUE_PER_POST 200
-#define TASK0_DELAY 1000
-#define TASK1_DELAY 1000
+#define TASK0_DELAY 500
+#define TASK1_DELAY 2000
 #define TASK2_DELAY 20
 
-static const char *TAG_HTTP = "HTTP_CLIENT";
+static const char *TAG_HTTP_POST = "HTTP_POST";
+static const char *TAG_HTTP_GET = "HTTP_GET";
 const static char *TAG_ADC = "ONE_SHOT_ADC";
 
 static uint8_t logs = 0;
@@ -40,28 +41,28 @@ static esp_err_t _http_event_handler(esp_http_client_event_t *evt)
     switch (evt->event_id)
     {
     case HTTP_EVENT_ERROR:
-        ESP_LOGE(TAG_HTTP, "HTTP_EVENT_ERROR");
+        ESP_LOGE(TAG_HTTP_POST, "HTTP_EVENT_ERROR");
         break;
     case HTTP_EVENT_ON_CONNECTED:
-        ESP_LOGI(TAG_HTTP, "HTTP_EVENT_ON_CONNECTED");
+        ESP_LOGI(TAG_HTTP_POST, "HTTP_EVENT_ON_CONNECTED");
         break;
     case HTTP_EVENT_HEADER_SENT:
-        ESP_LOGI(TAG_HTTP, "HTTP_EVENT_HEADER_SENT");
+        ESP_LOGI(TAG_HTTP_POST, "HTTP_EVENT_HEADER_SENT");
         break;
     case HTTP_EVENT_ON_HEADER:
-        ESP_LOGI(TAG_HTTP, "HTTP_EVENT_ON_HEADER, key=%s, value=%s", evt->header_key, evt->header_value);
+        ESP_LOGI(TAG_HTTP_POST, "HTTP_EVENT_ON_HEADER, key=%s, value=%s", evt->header_key, evt->header_value);
         break;
     case HTTP_EVENT_ON_DATA:
-        ESP_LOGI(TAG_HTTP, "HTTP_EVENT_ON_DATA, len=%d", evt->data_len);
+        ESP_LOGI(TAG_HTTP_POST, "HTTP_EVENT_ON_DATA, len=%d", evt->data_len);
         break;
     case HTTP_EVENT_ON_FINISH:
-        ESP_LOGI(TAG_HTTP, "HTTP_EVENT_ON_FINISH");
+        ESP_LOGI(TAG_HTTP_POST, "HTTP_EVENT_ON_FINISH");
         break;
     case HTTP_EVENT_DISCONNECTED:
-        ESP_LOGI(TAG_HTTP, "HTTP_EVENT_DISCONNECTED");
+        ESP_LOGI(TAG_HTTP_POST, "HTTP_EVENT_DISCONNECTED");
         break;
     case HTTP_EVENT_REDIRECT:
-        ESP_LOGI(TAG_HTTP, "HTTP_EVENT_REDIRECT");
+        ESP_LOGI(TAG_HTTP_POST, "HTTP_EVENT_REDIRECT");
         break;
     }
     return ESP_OK;
@@ -84,13 +85,13 @@ int http_post_json_handle(char *post_data)
     esp_err_t err = esp_http_client_perform(client);
     if (err == ESP_OK)
     {
-        ESP_LOGI(TAG_HTTP, "HTTP POST Status = %d, content_length = %lld",
+        ESP_LOGI(TAG_HTTP_POST, "HTTP POST Status = %d, content_length = %lld",
                  esp_http_client_get_status_code(client),
                  esp_http_client_get_content_length(client));
     }
     else
     {
-        ESP_LOGE(TAG_HTTP, "HTTP POST request failed: %s", esp_err_to_name(err));
+        ESP_LOGE(TAG_HTTP_POST, "HTTP POST request failed: %s", esp_err_to_name(err));
         return 1;
     }
     esp_http_client_close(client);
@@ -114,30 +115,30 @@ void http_get_handle()
     esp_err_t err = esp_http_client_open(client, 0);
     if (err != ESP_OK)
     {
-        ESP_LOGE(TAG_HTTP, "Failed to open HTTP connection: %s", esp_err_to_name(err));
+        ESP_LOGE(TAG_HTTP_GET, "Failed to open HTTP connection: %s", esp_err_to_name(err));
     }
     else
     {
         content_length = esp_http_client_fetch_headers(client);
         if (content_length < 0)
         {
-            ESP_LOGE(TAG_HTTP, "HTTP client fetch headers failed");
+            ESP_LOGE(TAG_HTTP_GET, "HTTP client fetch headers failed");
         }
         else
         {
             int data_read = esp_http_client_read_response(client, output_buffer, MAX_HTTP_OUTPUT_BUFFER);
             if (data_read >= 0)
             {
-                ESP_LOGI(TAG_HTTP, "HTTP GET Status = %d, content_length = %" PRId64,
+                ESP_LOGI(TAG_HTTP_GET, "HTTP GET Status = %d, content_length = %" PRId64,
                          esp_http_client_get_status_code(client),
                          esp_http_client_get_content_length(client));
 
                 logs = output_buffer[23] - '0';
-                // ESP_LOGI(TAG_HTTP, "LOG: %d", logs);
+                // ESP_LOGI(TAG_HTTP_GET, "LOG: %d", logs);
             }
             else
             {
-                ESP_LOGE(TAG_HTTP, "Failed to read response");
+                ESP_LOGE(TAG_HTTP_GET, "Failed to read response");
             }
         }
     }
@@ -175,11 +176,14 @@ void http_post_data(void *pvParameters)
     char *post_data = (char *)pvPortMalloc(MAX_POST_SIZE + 41);
     if (post_data == NULL)
     {
-        ESP_LOGE(TAG_HTTP, "Failed to allocate memory for post_data");
+        ESP_LOGE(TAG_HTTP_POST, "Failed to allocate memory for post_data");
         // Xử lý lỗi khác (thoát hoặc thực hiện các hành động khác)
         return;
     }
-    // Run the HTTP POST JSON example
+
+    // TickType_t xLastWakeTime;
+    // const TickType_t xFrequency = pdMS_TO_TICKS(TASK1_DELAY);
+
     while (1)
     {
         if (writeStage)
@@ -193,35 +197,44 @@ void http_post_data(void *pvParameters)
             }
             printf("thoi diem gui xong:\n--------------------------\n");
         }
-
         vTaskDelay(TASK1_DELAY / portTICK_PERIOD_MS);
+        // vTaskDelayUntil(&xLastWakeTime, xFrequency);
+        // vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
     vPortFree(post_data);
 }
 
 void http_get_data(void *pvParameters)
 {
+    // TickType_t xLastWakeTime;
+    // const TickType_t xFrequency = pdMS_TO_TICKS(TASK0_DELAY);
     while (1)
     {
         http_get_handle();
         printf("\n---------------------%d--------------------\n",eTaskGetState(task_adc_oneshot_write));
+        printf("\n---------------------%d--------------------\n",eTaskGetState(task_http_post_data));
+        printf("\n---------------------%d--------------------\n",eTaskGetState(task_http_get_data));
+
         if (logs == 1)
         {
-            if (eTaskGetState(task_adc_oneshot_write) == eReady||eTaskGetState(task_adc_oneshot_write) == eSuspended)
-            // if(1)
+            // if (eTaskGetState(task_http_post_data) == eSuspended)
+            if(1)
             {
                 // vTaskResume(task_http_post_data);
                 vTaskResume(task_adc_oneshot_write);
-                ESP_LOGI(TAG_HTTP, "LOG START");
+                ESP_LOGI(TAG_HTTP_GET, "LOG START");
             }
         }
-        else if (eTaskGetState(task_adc_oneshot_write) == eRunning||eTaskGetState(task_adc_oneshot_write) == eBlocked)
+        // else if (eTaskGetState(task_http_post_data) == eBlocked)
+        else
         {
             // vTaskSuspend(task_http_post_data);
             vTaskSuspend(task_adc_oneshot_write);
-            ESP_LOGI(TAG_HTTP, "LOG STOP");
+            ESP_LOGI(TAG_HTTP_GET, "LOG STOP");
         }
         vTaskDelay(TASK0_DELAY / portTICK_PERIOD_MS);
+        // vTaskDelayUntil(&xLastWakeTime, xFrequency);
+
     }
 }
 
@@ -256,9 +269,9 @@ void adc_oneshot_write(void *pvParameters)
             }
             *temp[tempWriteIndex] = '\0';
         }
+        // ESP_LOGI("ADC_WRITE", "ADC write done");
         // vTaskDelay(TASK2_DELAY / portTICK_PERIOD_MS);
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
-        ESP_LOGI("ADC_WRITE", "ADC write done");
     }
 }
 
@@ -270,11 +283,11 @@ void app_main(void)
     ESP_ERROR_CHECK(esp_event_loop_create_default());
     ESP_ERROR_CHECK(example_connect());
 
-    xTaskCreatePinnedToCore(http_get_data, "Task0", 8192, NULL, 1, &task_http_get_data, 0);
+    xTaskCreatePinnedToCore(http_get_data, "Task0", 8192, NULL, -1, &task_http_get_data, 0);
     // xTaskCreate(http_get_data, "HTTP_GET", 4096, NULL, 1, NULL);
-    xTaskCreatePinnedToCore(http_post_data, "Task1", 8192, NULL, 2, &task_http_post_data, 0);
-    xTaskCreatePinnedToCore(adc_oneshot_write, "Task2", 8192, NULL, 1, &task_adc_oneshot_write, 1);
-    // vTaskSuspend(task_http_post_data);
-    // vTaskSuspend(task_adc_oneshot_write);
+    xTaskCreatePinnedToCore(http_post_data, "Task1", 8192, NULL, 4, &task_http_post_data, 0);
+    xTaskCreatePinnedToCore(adc_oneshot_write, "Task2", 8192, NULL, 5, &task_adc_oneshot_write, 1);
+    vTaskSuspend(task_http_post_data);
+    vTaskSuspend(task_adc_oneshot_write);
     // vTaskDelete(task_http_post_data);
 }

@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, flash, jsonify
+from sqlalchemy import and_
 from .models import data1,device1
 from . import db
 import json
@@ -28,14 +29,29 @@ def esp_handle():
         except Exception as e:
             print("Error:", str(e))
             return "error"
-    if request.method == 'GET':
-        datas = data1.query.all()
-        data_list = [{"id": entry.id, "data": entry.data,"date": entry.date, "device_id": entry.device_id} for entry in datas]
-        return jsonify(data_list), 200
+    elif request.method == 'GET': #HOST/esp?start=value&end=value
+        start_id = request.args.get('start', type=int)
+        end_id = request.args.get('end', type=int)
+
+        # Use the provided values or set defaults if not present
+        start_id = start_id if start_id is not None else 0
+        end_id = end_id if end_id is not None else float('inf')
+
+        datas = data1.query.filter(and_(data1.id >= start_id, data1.id <= end_id)).all()
+
+        if datas:
+            data_list = [{"id": entry.id, "data": entry.data, "date": entry.date, "device_id": entry.device_id} for entry in datas]
+            return jsonify(data_list), 200
+        else:
+            return jsonify({'error': 'Invalid range or no data found'}), 404
+        # else:
+        #     datas = data1.query.all()
+        #     data_list = [{"id": entry.id, "data": entry.data,"date": entry.date, "device_id": entry.device_id} for entry in datas]
+        #     return jsonify(data_list), 200
         
 @esphandle.route('/device', methods=['GET'])
 def device_logs():
-    if request.method == 'GET':
+    if request.method == 'GET':#HOST/device?id=value
         device_id = request.args.get('id', type=int)
 
         if device_id is not None:
