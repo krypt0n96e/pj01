@@ -18,8 +18,8 @@
 #define MAX_POST_SIZE 4096
 #define TEMP_SIZE 10
 #define VALUE_PER_POST 200
-#define TASK0_DELAY 500
-#define TASK1_DELAY 2000
+#define TASK0_DELAY 1000
+#define TASK1_DELAY 1000
 #define TASK2_DELAY 20
 
 static const char *TAG_HTTP_POST = "HTTP_POST";
@@ -215,7 +215,7 @@ void http_post_data(void *pvParameters)
 
     while (1)
     {
-        vTaskSuspend(task_http_get_data);
+        // vTaskSuspend(task_http_get_data);
 
         if (writeStage)
         {
@@ -235,7 +235,7 @@ void http_post_data(void *pvParameters)
             ESP_LOGI(TAG_HTTP_POST, "HTTP POST request completed");
         }
 
-        vTaskResume(task_http_get_data);
+        // vTaskResume(task_http_get_data);
         vTaskDelay(TASK1_DELAY / portTICK_PERIOD_MS);
     }
 }
