@@ -220,6 +220,18 @@ function deleteAllData() {
   });
 }
 
+function exportAllData() {
+  // Assuming you want to send "200" as a query parameter
+  const queryParams = new URLSearchParams({ data: "200" });
+
+  fetch(`/export?${queryParams}`, {
+    method: "GET",
+  }).then((_res) => {
+    // Redirect to the root ("/") after the request is complete
+    window.location.href = "/";
+  });
+}
+
 function statusChange(log) {
   fetch("/status-change", {
     method: "POST",

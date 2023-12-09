@@ -1,6 +1,9 @@
-{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
-  %}
-  <!--div align="center" class="top">
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!--div class="top text-center">
     <h2 class="yellow">
       Auto refresh:
       <span class="top">
@@ -10,73 +13,74 @@
         </label>
       </span>
     </h2>
-  </div-->
-  
-  <div align="center" class="flex-container">
-    <div class="flex-item">
-      <div align="center">
-        <h2>Cong tac on/off</h2>
-        {%if(log.logs)%}
-        <label class="toggle">
-          <input type="checkbox" id="devideSw" checked />
-          <span
-            class="slider"
-            class="slider-green"
-            onClick="toggleChange({{log.logs}})"
-          ></span>
-        </label>
-        <div id="status">Status: ON</div>
-        {%else%}
-        <label class="toggle">
-          <input type="checkbox" id="devideSw" />
-          <span class="slider" onClick="toggleChange({{log.logs}})"></span>
-        </label>
-        <div id="status">Status: OFF</div>
-        {%endif%}
-      </div>
-    </div>
-  
-    <div class="flex-item">
-      <div class="form-container">
-        <form method="POST">
-          <div class="form-group">
-            <label for="data">Add data:</label>
-            <textarea name="data" id="data" class="form-control"></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary">Add data</button>
-        </form>
-      </div>
-    </div>
+</div-->
 
-    <div class="flex-item">
-      <canvas id="myChart" width="600" height="300"></canvas>
+<div class="flex-container text-center">
+  <div class="flex-item">
+    <div>
+      <h2>Cong tac on/off</h2>
+      {% if log.logs %}
+      <label class="toggle">
+        <input type="checkbox" id="devideSw" checked />
+        <span class="slider slider-green" onClick="toggleChange({{log.logs}})"></span>
+      </label>
+      <div id="status">Status: ON</div>
+      {% else %}
+      <label class="toggle">
+        <input type="checkbox" id="devideSw" />
+        <span class="slider" onClick="toggleChange({{log.logs}})"></span>
+      </label>
+      <div id="status">Status: OFF</div>
+      {% endif %}
     </div>
   </div>
-  
-  <h1 align="center">Data</h1>
-  <div align="center" class="top">
-    <buton type="buton" class="btn btn-danger" onClick="deleteAllData()">
+
+  <div class="flex-item">
+    <div class="form-container">
+      <form method="POST">
+        <div class="form-group">
+          <label for="data">Add data:</label>
+          <textarea name="data" id="data" class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Add data</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="flex-item">
+    <canvas id="myChart" width="600" height="300"></canvas>
+  </div>
+</div>
+
+<h1 class="text-center">Data</h1>
+<div class="top text-center">
+  <span>
+    <button type="button" class="btn btn-danger" onClick="deleteAllData()">
       Delete all
-    </buton>
-  </div>
-  <div align="center" class="top">
-       
-  </div>
-  <div class="scrollable-box">
-    <!-- Nội dung trong box -->
-    <div class="box-content">
-      <table class="table table-bordered" id="data-table">
-        <thead>
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Data</th>
-            <th scope="col">Date</th>
-            <th scope="col">Device_Id</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- {% for single_data in datas|reverse %}
+    </button>
+  </span>
+  <span>
+    <button type="button" class="btn btn-success" onClick="exportAllData()">
+      Export and delete all
+    </button>
+  </span>
+</div>
+
+<div class="top"></div>
+<div class="scrollable-box">
+  <div class="box-content">
+    <table class="table table-bordered" id="data-table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Data</th>
+          <th scope="col">Date</th>
+          <th scope="col">Device_Id</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- {% for single_data in datas|reverse %}
           <tr>
             <td>{{ single_data.id }}</td>
             <td>{{ single_data.data }}</td>
@@ -93,12 +97,9 @@
             </td>
           </tr>
           {% endfor %} -->
-        </tbody>
-      </table>
-    </div>
-  
-    <!-- Khi nội dung vượt quá kích thước box, thanh cuộn sẽ xuất hiện -->
+      </tbody>
+    </table>
   </div>
-  
-  {% endblock %}
-  
+</div>
+
+{% endblock %}

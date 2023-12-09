@@ -47,12 +47,15 @@ def export_csv():
         # Check if the delete_all request was successful
         if delete_all_response.status_code == 200:
             # If successful, return a JSON response with success and filename
+            flash('Data exported!', category='success')
             return jsonify({'success': True, 'filename': csv_filename})
         else:
             # If not successful, return a JSON response with an error message
+            flash('Failed to delete all data after export!', category='error')
             return jsonify({'success': False, 'message': 'Failed to delete all data after export'})
     else:
         # Trả về thông báo nếu không đủ dữ liệu
+        flash('Not enough data to export CSV!', category='error')
         return jsonify({'success': False, 'message': 'Not enough data to export CSV'})
 
 def process_and_split_data(data_str):
