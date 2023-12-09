@@ -255,7 +255,7 @@ void http_get_data(void *pvParameters)
             vTaskResume(task_adc_oneshot_write);
             ESP_LOGI(TAG_HTTP_GET, "LOG START");
         }
-        else
+        else if((eTaskGetState(task_adc_oneshot_write)==eBlocked)&&(eTaskGetState(task_http_post_data)==eBlocked))
         {
             vTaskSuspend(task_http_post_data);
             vTaskSuspend(task_adc_oneshot_write);
@@ -313,7 +313,6 @@ void app_main(void)
     xTaskCreatePinnedToCore(http_get_data, "Task0", 8192, NULL, 0, &task_http_get_data, 1);
     xTaskCreatePinnedToCore(http_post_data, "Task1", 8192, NULL, 1, &task_http_post_data, 1);
     xTaskCreatePinnedToCore(adc_oneshot_write, "Task2", 8192, NULL, 1, &task_adc_oneshot_write, 0);
-
     vTaskSuspend(task_http_post_data);
     vTaskSuspend(task_adc_oneshot_write);
 }
